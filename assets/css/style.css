@@ -1,0 +1,23 @@
+h1 {
+  text-align: center;
+}
+
+.jumbotron {
+  text-align: center;
+}
+
+.gameDivs {
+  width: 100%;
+  height: 200px;
+  border: 1px solid black;
+}
+
+#chatBox {
+  width: 100%;
+  height: 300px;
+  background-color: white;
+}
+
+#chatInput {
+  width: 93%;
+}
