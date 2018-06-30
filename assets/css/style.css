@@ -21,3 +21,9 @@ h1 {
 #chatInput {
   width: 93%;
 }
+
+.rpgBtn {
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+}
