@@ -12,7 +12,7 @@
   var database = firebase.database();
 
   //global variables
-  var turn = 1;
+  var turn = 0;
   var player1Wins = 0;
   var player1Losses = 0;
   var player2Wins = 0;
@@ -30,6 +30,11 @@
       newBtn.text(rpgOptionArr[i]);
       $(displayLocation).append(newBtn);
     }
+    turn++;
+    console.log(turn);
+    database.ref().update({
+      turn: turn
+    });
   };
 
   $('#inputName').on('click', function (event) {
@@ -42,22 +47,49 @@
           wins: player1Wins,
           losses: player1Losses
         });
-        database.ref('players/1').on('value', function (snapshot) {
-          $('#player1Display').text('Player 1: ' + snapshot.val().name);
-          $('#player1Score').text('Wins: ' + snapshot.val().wins + ' Losses: ' + snapshot.val().losses)
-        });
       } else {
-        database.ref('players/2').set({
-          name: playerName,
-          wins: player2Wins,
-          losses: player2Losses
-        });
-        database.ref('players/2').on('value', function (snapshot) {
-          $('#player2Display').text('Player 2: ' + snapshot.val().name);
-          $('#player2Score').text('Wins: ' + snapshot.val().wins + ' Losses: ' + snapshot.val().losses)
+        database.ref('players/2').once("value", function (snapshot) {
+          if (snapshot.exists() == false) {
+            database.ref('players/2').set({
+              name: playerName,
+              wins: player2Wins,
+              losses: player2Losses
+            });
+          }
         });
       }
     });
+  });
 
-    // gameReset('#player1Display');
+
+  database.ref('players/1').on("value", function (snapshot) {
+    if (snapshot.exists()) {
+      $('#player1Display').text('Player 1: ' + snapshot.val().name);
+      $('#player1Score').text('Wins: ' + snapshot.val().wins + ' Losses: ' + snapshot.val().losses)
+    }
+  });
+
+  database.ref('players/2').on("value", function (snapshot) {
+    if (snapshot.exists()) {
+      $('#player2Display').text('Player 2: ' + snapshot.val().name);
+      $('#player2Score').text('Wins: ' + snapshot.val().wins + ' Losses: ' + snapshot.val().losses)
+    }
+  });
+
+  database.ref('players/2').on("value", function (snapshot) {
+    if (snapshot.exists()) {
+      gameReset('#player1Display');
+    }
+  });
+
+
+  $(document).on('click', '.rpgBtn', function (event) {
+    event.preventDefault();
+    var player1Choice = $(this).val();
+    console.log(player1Choice);
+    database.ref().on('value', function(snapshot) {
+      if (snapshot.val().turn == 1) {
+        console.log('yes');
+    }
+    })
   });
